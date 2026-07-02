@@ -1,0 +1,299 @@
+<?php
+ini_set('display_errors',1);
+error_reporting(E_ALL);
+
+require_once '../config.php';
+
+if (!isset($_SESSION['admin'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$db = new SQLite3(__DIR__ . '/../database/panel.db');
+
+$db->exec("
+CREATE TABLE IF NOT EXISTS vpn_keys(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    config TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+");
+
+if (isset($_GET['delete'])) {
+    $id = (int)$_GET['delete'];
+
+    $stmt = $db->prepare("DELETE FROM vpn_keys WHERE id=:id");
+    $stmt->bindValue(':id',$id,SQLITE3_INTEGER);
+    $stmt->execute();
+
+    header("Location: keys.php");
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD']=="POST") {
+
+    $name=trim($_POST['name']);
+    $type=trim($_POST['type']);
+    $config=trim($_POST['config']);
+$country = trim($_POST['country']);
+$plan = trim($_POST['plan']);
+$featured = (int)$_POST['featured'];
+
+    if($name!="" && $type!="" && $config!=""){
+
+        $stmt=$db->prepare("
+INSERT INTO vpn_keys(name,type,config,country,plan,featured)
+VALUES(:name,:type,:config,:country,:plan,:featured)        
+        ");
+
+        $stmt->bindValue(':name',$name,SQLITE3_TEXT);
+        $stmt->bindValue(':type',$type,SQLITE3_TEXT);
+        $stmt->bindValue(':config',$config,SQLITE3_TEXT);
+$stmt->bindValue(':country',$country,SQLITE3_TEXT);
+$stmt->bindValue(':plan',$plan,SQLITE3_TEXT);
+$stmt->bindValue(':featured',$featured,SQLITE3_INTEGER);
+        $stmt->execute();
+
+        header("Location: keys.php");
+        exit;
+    }
+}
+
+$result=$db->query("SELECT * FROM vpn_keys ORDER BY id DESC");
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>VPN Keys</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#0f172a;
+color:#fff;
+font-family:Arial,sans-serif;
+}
+
+.container{
+width:95%;
+max-width:1100px;
+margin:30px auto;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.35);
+}
+
+h2{
+color:#00e676;
+margin-bottom:15px;
+}
+
+input,
+select,
+textarea{
+
+width:100%;
+padding:12px;
+margin-bottom:12px;
+
+border:none;
+border-radius:8px;
+
+outline:none;
+}
+
+button{
+
+padding:12px 18px;
+border:none;
+border-radius:8px;
+
+background:#00e676;
+color:#000;
+
+font-weight:bold;
+cursor:pointer;
+
+}
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+th,td{
+
+padding:12px;
+border-bottom:1px solid #334155;
+
+text-align:left;
+
+}
+
+th{
+color:#00e676;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+<h2>➕ Add VPN Key</h2>
+
+<form method="POST">
+
+<input
+type="text"
+name="name"
+placeholder="Key Name"
+required>
+
+<select name="type" required>
+<option value="VLESS">VLESS</option>
+<option value="Shadowsocks">Shadowsocks</option>
+<option value="Hysteria">Hysteria</option>
+<option value="Trojan">Trojan</option>
+</select>
+
+<textarea
+name="config"
+rows="6"
+placeholder="Paste VPN Config Here"
+required></textarea>
+
+<select name="country" required>
+<option value="SG">🇸🇬 Singapore</option>
+<option value="JP">🇯🇵 Japan</option>
+<option value="US">🇺🇸 United States</option>
+<option value="DE">🇩🇪 Germany</option>
+</select>
+
+<select name="plan" required>
+<option value="Free">🆓 Free</option>
+<option value="Premium">💎 Premium</option>
+</select>
+
+<select name="featured" required>
+<option value="0">Normal</option>
+<option value="1">⭐ Featured</option>
+</select>
+<button type="submit">
+Save Key
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<h2>🔑 VPN Keys</h2>
+
+<table>
+
+<tr>
+
+<th>ID</th>
+<th>Name</th>
+<th>Type</th>
+<th>Created</th>
+<th>Action</th>
+
+</tr>
+
+<?php
+while($row=$result->fetchArray(SQLITE3_ASSOC)){
+?>
+
+<tr>
+
+<td><?php echo $row['id']; ?></td>
+
+<td><?php echo htmlspecialchars($row['name']); ?></td>
+
+<td><?php echo htmlspecialchars($row['type']); ?></td>
+
+<td><?php echo $row['created_at']; ?></td>
+
+<td><a
+href="?delete=<?php echo $row['id']; ?>"
+onclick="return confirm('Delete this key?');"
+style="color:#ff5252;text-decoration:none;margin-right:10px;">
+Delete
+</a>
+<a
+href="edit-key.php?id=<?php echo $row['id']; ?>"
+style="color:#00e676;text-decoration:none;margin-right:10px;">
+Edit
+</a>
+
+<button
+type="button"
+onclick="navigator.clipboard.writeText(<?php echo json_encode($row['config']); ?>);alert('Config copied!');"
+style="
+background:#2196f3;
+color:#fff;
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+">
+Copy
+</button>
+
+</td>
+
+</tr>
+
+<?php
+}
+?>
+
+</table>
+
+</div>
+
+<div class="card">
+
+<a href="dashboard.php"
+style="
+display:inline-block;
+padding:12px 20px;
+background:#00e676;
+color:#000;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+">
+⬅ Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>
