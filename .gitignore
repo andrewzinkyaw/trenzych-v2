@@ -1,0 +1,22 @@
+# Database
+database/panel.db
+
+# Backup files
+*.bak
+*.backup
+*.save
+*.old
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
