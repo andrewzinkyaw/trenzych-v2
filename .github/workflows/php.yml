@@ -1,0 +1,35 @@
+name: PHP Syntax Check
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: PHP Version
+        run: php -v
+
+      - name: Lint PHP Files
+        run: |
+          find . -name "*.php" -print0 | while IFS= read -r -d '' file
+          do
+            php -l "$file"
+          done
