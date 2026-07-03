@@ -341,7 +341,7 @@ while($row = $result->fetchArray(SQLITE3_ASSOC)){
 
 <div>
 <?php if($row['status']){ ?>
-<span style="display:flex;align-items:center;gap:6px;color:var(--theme-color) !important;font-size:12px;font-weight:600;letter-spacing:.3px;">
+<span style="display:flex;align-items:center;gap:6px;color:#fff !important;font-size:12px;font-weight:600;letter-spacing:.3px;">
     <span style="width:8px;height:8px;border-radius:50%;background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.7);display:inline-block;"></span>
     ONLINE
 </span>
@@ -400,7 +400,7 @@ display:inline-block;
 padding:4px 10px;
 border-radius:999px;
 background:rgba(0,230,118,.15);
-color:var(--theme-color);
+color:#00e676;
 font-weight:bold;
 ">
 🟢 Active
