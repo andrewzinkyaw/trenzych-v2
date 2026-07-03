@@ -49,6 +49,11 @@ ORDER BY vpn_keys.featured DESC, vpn_keys.id DESC
 <link rel="stylesheet" href="assets/css/style.css">
 
 <style>
+
+:root{
+    --theme-color: <?php echo htmlspecialchars(getSetting($db, 'theme_color')); ?>;
+}
+
 body{
     margin:0;
     color:#fff;
@@ -131,7 +136,7 @@ margin:30px auto;
 
 .search-box:focus,
 .filter-box:focus{
-    border-color:#00e676;
+    border-color:var(--theme-color);
     box-shadow:0 0 12px rgba(0,230,118,.25);
 }
 
@@ -150,7 +155,7 @@ margin-top:15px;
 display:inline-block;
 padding:5px 10px;
 border-radius:5px;
-background:#00e676;
+background:var(--theme-color);
 color:#000;
 font-weight:bold;
 margin-bottom:10px;
@@ -221,7 +226,7 @@ margin-bottom:10px;
 
     <div style="margin-top:18px;">
         <span style="
-            background:#00e676;
+            background:var(--theme-color);
             color:#08111f;
             padding:8px 18px;
             border-radius:50px;
@@ -247,7 +252,7 @@ padding:18px;
 text-align:center;
 ">
 <div style="font-size:28px;">🔑</div>
-<div style="font-size:28px;font-weight:bold;color:#00e676;">
+<div style="font-size:28px;font-weight:bold;color:var(--theme-color);">
 <?php echo $totalKeys; ?>
 </div>
 <div style="color:#94a3b8;">VPN Keys</div>
@@ -277,7 +282,7 @@ padding:18px;
 text-align:center;
 ">
 <div style="font-size:28px;">🟢</div>
-<div style="font-size:28px;font-weight:bold;color:#00e676;">
+<div style="font-size:28px;font-weight:bold;color:var(--theme-color)">
 <?php echo $onlineServers; ?>
 </div>
 <div style="color:#94a3b8;">Online</div>
@@ -336,7 +341,7 @@ while($row = $result->fetchArray(SQLITE3_ASSOC)){
 
 <div>
 <?php if($row['status']){ ?>
-<span style="display:flex;align-items:center;gap:6px;color:#00e676 !importnt;font-size:12px;font-weight:600;letter-spacing:.3px;">
+<span style="display:flex;align-items:center;gap:6px;color:var(--theme-color) !important;font-size:12px;font-weight:600;letter-spacing:.3px;">
     <span style="width:8px;height:8px;border-radius:50%;background:#00e676;box-shadow:0 0 6px rgba(0,230,118,.7);display:inline-block;"></span>
     ONLINE
 </span>
@@ -395,7 +400,7 @@ display:inline-block;
 padding:4px 10px;
 border-radius:999px;
 background:rgba(0,230,118,.15);
-color:#00e676;
+color:var(--theme-color);
 font-weight:bold;
 ">
 🟢 Active
@@ -513,6 +518,16 @@ document.querySelectorAll(".copy-btn").forEach(btn=>{
 <a href="<?php echo htmlspecialchars(getSetting($db, 'telegram_url')); ?>" class="telegram-btn" target="_blank">
  Telegram
 </a>
+
+<footer style="
+text-align:center;
+padding:20px;
+color:#94a3b8;
+font-size:14px;
+margin-top:20px;
+">
+<?php echo htmlspecialchars(getSetting($db, 'footer_text')); ?>
+</footer>
 
 </body>
 </html>
