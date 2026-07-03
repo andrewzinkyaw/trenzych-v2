@@ -6,7 +6,20 @@ $totalKeys = $db->querySingle("SELECT COUNT(*) FROM vpn_keys");
 $totalServers = $db->querySingle("SELECT COUNT(*) FROM servers");
 $onlineServers = $db->querySingle("SELECT COUNT(*) FROM servers WHERE status=1");
 $avgPing = (int)$db->querySingle("SELECT AVG(ping) FROM servers");
+function getSetting($db, $key) {
+    $stmt = $db->prepare("
+        SELECT setting_value
+        FROM settings
+        WHERE setting_key = :key
+        LIMIT 1
+    ");
 
+    $stmt->bindValue(':key', $key, SQLITE3_TEXT);
+
+    $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+
+    return $result ? $result['setting_value'] : '';
+}
 $result = $db->query("
 SELECT
 vpn_keys.id,
@@ -31,7 +44,7 @@ ORDER BY vpn_keys.featured DESC, vpn_keys.id DESC
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRENZYCH VPN</title>
+<title><?php echo htmlspecialchars(getSetting($db, 'site_name')); ?></title>
 
 <link rel="stylesheet" href="assets/css/style.css">
 
@@ -199,7 +212,7 @@ margin-bottom:10px;
     <div style="font-size:52px;margin-bottom:10px;">🚀</div>
 
     <h1 style="font-size:36px;font-weight:800;color:#fff;">
-        TRENZYCH VPN
+        <?php echo htmlspecialchars(getSetting($db, 'site_name')); ?>
     </h1>
 
     <p style="color:#94a3b8;margin-top:10px;">
@@ -497,7 +510,7 @@ document.querySelectorAll(".copy-btn").forEach(btn=>{
 });
 </script>
 
-<a href="https://t.me/trenzych" class="telegram-btn" target="_blank">
+<a href="<?php echo htmlspecialchars(getSetting($db, 'telegram_url')); ?>" class="telegram-btn" target="_blank">
  Telegram
 </a>
 

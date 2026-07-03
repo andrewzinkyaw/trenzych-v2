@@ -143,6 +143,10 @@ echo "</tr>";
 🔑 VPN Keys
 </a>
 
+<a href="settings.php" style="display:inline-block;padding:12px 18px;background:#ff9800;color:#fff;text-decoration:none;border-radius:8px;margin-left:10px;">
+⚙️ Settings
+</a>
+
 </div>
 
 </div>
