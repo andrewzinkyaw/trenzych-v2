@@ -8,49 +8,104 @@ if (!isset($_SESSION['admin'])) {
 
 $db = new SQLite3(__DIR__ . '/../database/panel.db');
 
-$db->exec("
-CREATE TABLE IF NOT EXISTS servers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    ip TEXT,
-    domain TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-");
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim($_POST['name']);
     $ip = trim($_POST['ip']);
     $domain = trim($_POST['domain']);
 
-    $stmt = $db->prepare("
+    if ($name !== '' && $ip !== '') {
+
+        $stmt = $db->prepare("
         INSERT INTO servers(name,ip,domain)
         VALUES(:name,:ip,:domain)
-    ");
+        ");
 
-    $stmt->bindValue(':name',$name,SQLITE3_TEXT);
-    $stmt->bindValue(':ip',$ip,SQLITE3_TEXT);
-    $stmt->bindValue(':domain',$domain,SQLITE3_TEXT);
+        $stmt->bindValue(':name',$name,SQLITE3_TEXT);
+        $stmt->bindValue(':ip',$ip,SQLITE3_TEXT);
+        $stmt->bindValue(':domain',$domain,SQLITE3_TEXT);
 
-    $stmt->execute();
+        $stmt->execute();
 
-    header("Location: servers.php");
-    exit;
+        header("Location: servers.php");
+        exit;
+    }
 }
 
-$result = $db->query("SELECT * FROM servers ORDER BY id DESC");
+$result = $db->query("
+SELECT *
+FROM servers
+ORDER BY id DESC
+");
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><input
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server Manager</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0f172a;
+    color:#fff;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+h2{
+    color:#00e676;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#00e676;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+}</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>➕ Add Server</h2>
+
+<form method="POST">
+
+<input
 type="text"
 name="name"
-placeholder="Server Name"
+placeholder="Server Name (SG-01)"
 required>
 
 <input
@@ -62,8 +117,7 @@ required>
 <input
 type="text"
 name="domain"
-placeholder="Domain"
-required>
+placeholder="Domain (Optional)">
 
 <button type="submit">
 Add Server
@@ -75,56 +129,37 @@ Add Server
 
 <div class="card">
 
-<h2>Server List</h2>
+<h2>🖥 Server List</h2>
 
-<table>
+<table style="width:100%;border-collapse:collapse;">
+
+<tr>
+<th align="left">Name</th>
+<th align="left">IP</th>
+<th align="left">Domain</th>
+</tr>
+
+<?php while($row = $result->fetchArray(SQLITE3_ASSOC)){ ?>
 
 <tr>
 
-<th>ID</th>
-<th>Name</th>
-<th>IP</th>
-<th>Domain</th>
-<th>Created</th>
+<td style="padding:12px 0;">
+<?php echo htmlspecialchars($row['name']); ?>
+</td>
+
+<td>
+<?php echo htmlspecialchars($row['ip']); ?>
+</td>
+
+<td>
+<?php echo htmlspecialchars($row['domain']); ?>
+</td>
 
 </tr>
 
-<?php
-
-while($row = $result->fetchArray(SQLITE3_ASSOC)){
-
-echo "<tr>";
-
-echo "<td>".$row['id']."</td>";
-
-echo "<td>".htmlspecialchars($row['name'])."</td>";
-
-echo "<td>".htmlspecialchars($row['ip'])."</td>";
-
-echo "<td>".htmlspecialchars($row['domain'])."</td>";
-
-echo "<td>".$row['created_at']."</td>";
-
-echo "</tr>";
-
-}
-
-?>
+<?php } ?>
 
 </table>
-
-</div><div class="card">
-
-<a href="dashboard.php" style="
-display:inline-block;
-padding:12px 20px;
-background:#2196f3;
-color:#fff;
-text-decoration:none;
-border-radius:8px;
-">
-⬅ Back to Dashboard
-</a>
 
 </div>
 

@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST["username"] ?? "");
     $password = trim($_POST["password"] ?? "");
 
-    if ($username === "admin" && $password === "admin123") {
+    if ($username === "admin" && $password === "MS7LUCKYMAN") {
 
         $_SESSION["admin"] = $username;
         header("Location: dashboard.php");

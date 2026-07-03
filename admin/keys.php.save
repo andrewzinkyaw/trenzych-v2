@@ -40,29 +40,28 @@ if ($_SERVER['REQUEST_METHOD']=="POST") {
 $country = trim($_POST['country']);
 $plan = trim($_POST['plan']);
 $featured = (int)$_POST['featured'];
-$server_id = (int)$_POST['server_id'];
 
     if($name!="" && $type!="" && $config!=""){
 
         $stmt=$db->prepare("
-INSERT INTO vpn_keys(name,type,config,country,plan,featured,server_id)
-VALUES(:name,:type,:config,:country,:plan,:featured,:server_id)
-");
+INSERT INTO vpn_keys(name,type,config,country,plan,featured)
+VALUES(:name,:type,:config,:country,:plan,:featured)        
+VALUES(:name,:type,:config)
+        ");
+
         $stmt->bindValue(':name',$name,SQLITE3_TEXT);
         $stmt->bindValue(':type',$type,SQLITE3_TEXT);
         $stmt->bindValue(':config',$config,SQLITE3_TEXT);
 $stmt->bindValue(':country',$country,SQLITE3_TEXT);
 $stmt->bindValue(':plan',$plan,SQLITE3_TEXT);
 $stmt->bindValue(':featured',$featured,SQLITE3_INTEGER);
-$stmt->bindValue(':server_id',$server_id,SQLITE3_INTEGER);
-
- $stmt->execute();
+        $stmt->execute();
 
         header("Location: keys.php");
         exit;
     }
-}
-$servers = $db->query("SELECT id,name FROM servers ORDER BY name ASC");
+W
+
 $result=$db->query("SELECT * FROM vpn_keys ORDER BY id DESC");
 ?>
 <!DOCTYPE html>
@@ -181,11 +180,6 @@ required>
 </select>
 
 <textarea
-name="config"
-rows="6"
-placeholder="Paste VPN Config Here"
-required></textarea>
-
 <select name="country" required>
 <option value="SG">🇸🇬 Singapore</option>
 <option value="JP">🇯🇵 Japan</option>
@@ -197,17 +191,16 @@ required></textarea>
 <option value="Free">🆓 Free</option>
 <option value="Premium">💎 Premium</option>
 </select>
-<select name="server_id" required>
-<?php while($server = $servers->fetchArray(SQLITE3_ASSOC)){ ?>
-<option value="<?php echo $server['id']; ?>">
-<?php echo htmlspecialchars($server['name']); ?>
-</option>
-<?php } ?>
-</select>
+
 <select name="featured" required>
 <option value="0">Normal</option>
 <option value="1">⭐ Featured</option>
 </select>
+name="config"
+rows="6"
+placeholder="Paste VPN Config Here"
+required></textarea>
+
 <button type="submit">
 Save Key
 </button>
