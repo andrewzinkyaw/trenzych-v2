@@ -18,6 +18,7 @@ function getSetting($db, $key) {
 
     $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
+
     return $result ? $result['setting_value'] : '';
 }
 $result = $db->query("
@@ -36,7 +37,6 @@ servers.ping
 FROM vpn_keys
 LEFT JOIN servers
 ON vpn_keys.server_id = servers.id
-WHERE vpn_keys.plan = 'Free'
 ORDER BY vpn_keys.featured DESC, vpn_keys.id DESC
 ");
 ?>
@@ -48,6 +48,7 @@ ORDER BY vpn_keys.featured DESC, vpn_keys.id DESC
 <title><?php echo htmlspecialchars(getSetting($db, 'site_name')); ?></title>
 
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/free.css">
 
 <style>
 
@@ -115,30 +116,6 @@ margin:30px auto;
     box-shadow:
         0 18px 45px rgba(0,0,0,.5),
         0 0 20px rgba(0,230,118,.18);
-}
-
-.search-box,
-.filter-box{
-    width:100%;
-    padding:14px 16px;
-    margin:15px 0;
-    border:1px solid #334155;
-    border-radius:14px;
-    background:#111827;
-    color:#ffffff;
-    font-size:15px;
-    outline:none;
-    transition:.25s ease;
-}
-
-.search-box::placeholder{
-    color:#94a3b8;
-}
-
-.search-box:focus,
-.filter-box:focus{
-    border-color:var(--theme-color);
-    box-shadow:0 0 12px rgba(0,230,118,.25);
 }
 
 .filter-box{
@@ -212,107 +189,16 @@ margin-bottom:10px;
 <div class="container">
 
 <div class="header">
-<img
-src="assets/images/<?php echo htmlspecialchars(getSetting($db,'logo')); ?>"
-alt="Logo"
-style="
-width:110px;
-height:110px;
-object-fit:contain;
-margin-bottom:20px;
-filter:drop-shadow(0 0 12px rgba(255,0,0,.45));
-">    
 
-    <h1 style="font-size:36px;font-weight:800;color:#fff;">
-        <?php echo htmlspecialchars(getSetting($db, 'site_name')); ?>
-    </h1>
+<div style="text-align:center;margin:20px 0 30px;">
+    <h1 style="font-size:42px;font-weight:800;letter-spacing:.5px;">
+    FREE VPN KEY
+</h1>
 
-    <p style="color:#94a3b8;margin-top:10px;">
-        Free VPN Configurations
-    </p>
-
-    <div style="margin-top:18px;">
-        <span style="
-            background:var(--theme-color);
-            color:#08111f;
-            padding:8px 18px;
-            border-radius:50px;
-            font-weight:bold;
-        ">
-            ⚡ Fast • Secure • Stable
-        </span>
+<p style="color:#94a3b8;margin-top:8px;font-size:18px;letter-spacing:.5px;">
+    Powered by TRENZYCH </p>
 </div>
 
-<div style="
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-margin:20px 0;
-">
-
-<!-- VPN Keys -->
-<div style="
-background:rgba(30,41,59,.8);
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
-padding:18px;
-text-align:center;
-">
-<div style="font-size:28px;">🔑</div>
-<div style="font-size:28px;font-weight:bold;color:var(--theme-color);">
-<?php echo $totalKeys; ?>
-</div>
-<div style="color:#94a3b8;">VPN Keys</div>
-</div>
-
-<!-- Servers -->
-<div style="
-background:rgba(30,41,59,.8);
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
-padding:18px;
-text-align:center;
-">
-<div style="font-size:28px;">🖥️</div>
-<div style="font-size:28px;font-weight:bold;color:#4fc3f7;">
-<?php echo $totalServers; ?>
-</div>
-<div style="color:#94a3b8;">Servers</div>
-</div>
-
-<!-- Online -->
-<div style="
-background:rgba(30,41,59,.8);
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
-padding:18px;
-text-align:center;
-">
-<div style="font-size:28px;">🟢</div>
-<div style="font-size:28px;font-weight:bold;color:var(--theme-color)">
-<?php echo $onlineServers; ?>
-</div>
-<div style="color:#94a3b8;">Online</div>
-</div>
-
-<!-- Avg Ping -->
-<div style="
-background:rgba(30,41,59,.8);
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
-padding:18px;
-text-align:center;
-">
-<div style="font-size:28px;">⚡</div>
-<div style="font-size:28px;font-weight:bold;color:#ffb300;">
-<?php echo $avgPing; ?> ms
-</div>
-<div style="color:#94a3b8;">Avg Ping</div>
-</div>
-
-</div>
-
-<h2>Available VPN Keys</h2>
 <input
 type="text"
 id="search"

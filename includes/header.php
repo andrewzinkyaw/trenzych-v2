@@ -39,7 +39,7 @@ if (!isset($favicon)) {
 
 <style>
 :root{
-    --primary:#e11d48;
+    --primary:#00e676;
 
     --bg:#020617;
     --surface:#0f172a;

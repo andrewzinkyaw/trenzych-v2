@@ -8,35 +8,34 @@ if (!isset($_SESSION['admin'])) {
 
 $db = new SQLite3(__DIR__ . '/../database/panel.db');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$search = trim($_GET['search'] ?? '');
 
-    $name = trim($_POST['name']);
-    $ip = trim($_POST['ip']);
-    $domain = trim($_POST['domain']);
+if ($search !== '') {
 
-    if ($name !== '' && $ip !== '') {
+    $stmt = $db->prepare("
+        SELECT *
+        FROM servers
+        WHERE
+            name LIKE :q
+            OR ip LIKE :q
+            OR domain LIKE :q
+            OR provider LIKE :q
+        ORDER BY id DESC
+    ");
 
-        $stmt = $db->prepare("
-        INSERT INTO servers(name,ip,domain)
-        VALUES(:name,:ip,:domain)
-        ");
+    $stmt->bindValue(':q', "%{$search}%", SQLITE3_TEXT);
 
-        $stmt->bindValue(':name',$name,SQLITE3_TEXT);
-        $stmt->bindValue(':ip',$ip,SQLITE3_TEXT);
-        $stmt->bindValue(':domain',$domain,SQLITE3_TEXT);
+    $result = $stmt->execute();
 
-        $stmt->execute();
+} else {
 
-        header("Location: servers.php");
-        exit;
-    }
+    $result = $db->query("
+        SELECT *
+        FROM servers
+        ORDER BY id DESC
+    ");
+
 }
-
-$result = $db->query("
-SELECT *
-FROM servers
-ORDER BY id DESC
-");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -97,39 +96,34 @@ button{
 <div class="container">
 
 <div class="card">
-
-<h2>➕ Add Server</h2>
-
-<form method="POST">
-
-<input
-type="text"
-name="name"
-placeholder="Server Name (SG-01)"
-required>
-
-<input
-type="text"
-name="ip"
-placeholder="Server IP"
-required>
-
-<input
-type="text"
-name="domain"
-placeholder="Domain (Optional)">
-
-<button type="submit">
-Add Server
-</button>
-
-</form>
-
+<div style="margin-bottom:20px;">
+    <a href="add-server.php"
+       style="display:inline-block;
+              background:#00e676;
+              color:#000;
+              padding:12px 18px;
+              text-decoration:none;
+              border-radius:8px;
+              font-weight:bold;">
+        ➕ Add Server
+    </a>
 </div>
 
-<div class="card">
-
 <h2>🖥 Server List</h2>
+<form method="GET" style="margin:15px 0 20px;">
+    <input
+        type="text"
+        name="search"
+        placeholder="🔍 Search by name, IP, domain or provider..."
+        value="<?php echo htmlspecialchars($search); ?>"
+        style="
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:8px;
+            box-sizing:border-box;
+        ">
+</form>
 
 <table style="width:100%;border-collapse:collapse;">
 
@@ -137,22 +131,46 @@ Add Server
 <th align="left">Name</th>
 <th align="left">IP</th>
 <th align="left">Domain</th>
+<th align="left">Provider</th>
+<th align="left">Status</th>
+<th align="left">Ping</th>
+<th align="center">Action</th>
 </tr>
 
 <?php while($row = $result->fetchArray(SQLITE3_ASSOC)){ ?>
 
 <tr>
 
-<td style="padding:12px 0;">
-<?php echo htmlspecialchars($row['name']); ?>
+<td><?php echo htmlspecialchars($row['name']); ?></td>
+
+<td><?php echo htmlspecialchars($row['ip']); ?></td>
+
+<td><?php echo htmlspecialchars($row['domain']); ?></td>
+
+<td><?php echo htmlspecialchars($row['provider']); ?></td>
+
+<td>
+<?php echo $row['status'] ? "🟢 Online" : "🔴 Offline"; ?>
 </td>
 
 <td>
-<?php echo htmlspecialchars($row['ip']); ?>
+<?php echo (int)$row['ping']; ?> ms
 </td>
 
-<td>
-<?php echo htmlspecialchars($row['domain']); ?>
+<td align="center">
+
+<a href="edit-server.php?id=<?php echo $row['id']; ?>">
+✏️
+</a>
+
+&nbsp;
+
+<a
+href="delete-server.php?id=<?php echo $row['id']; ?>"
+onclick="return confirm('Delete this server?');">
+🗑
+</a>
+
 </td>
 
 </tr>

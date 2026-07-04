@@ -28,9 +28,9 @@ if (!isset($logo) && isset($db)) {
 
     <li><a href="/index.php">🏠 Home</a></li>
 
-    <li><a href="/free.php">🔓 Free VPN</a></li>
+    <li><a href="/free.php">🔓 Free VPN Key</a></li>
 
-    <li><a href="/premium.php">💎 Premium VPN</a></li>
+    <li><a href="/vip.php">💎 VIP Paid Plan</a></li>
 
     <li><a href="/downloads.php">⬇️ Downloads</a></li>
 
@@ -230,5 +230,21 @@ themeToggle.addEventListener("click",()=>{
     }
 
 });
+
+// Mobile Menu
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
+
+if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+
+        if (navMenu.classList.contains("active")) {
+            menuToggle.textContent = "✕";
+        } else {
+            menuToggle.textContent = "☰";
+        }
+    });
+}
 
 </script>

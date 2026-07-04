@@ -1,0 +1,36 @@
+/* ===== Free VPN ===== */
+
+.key{
+    background:rgba(30,41,59,.75);
+    backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
+    transition:.25s ease;
+    box-shadow:0 10px 35px rgba(0,0,0,.35);
+}
+
+.key:hover{
+    transform:translateY(-4px);
+    border-color:var(--theme-color);
+    box-shadow:0 15px 40px rgba(0,230,118,.18);
+}
+
+.search-box,
+.filter-box{
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+    border:1px solid #334155;
+    background:#111827;
+    color:#fff;
+    margin-bottom:15px;
+    font-size:15px;
+}
+
+.search-box:focus,
+.filter-box:focus{
+    outline:none;
+    border-color:var(--theme-color);
+}
