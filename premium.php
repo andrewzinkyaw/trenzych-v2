@@ -36,7 +36,7 @@ servers.ping
 FROM vpn_keys
 LEFT JOIN servers
 ON vpn_keys.server_id = servers.id
-WHERE vpn_keys.plan = 'Free'
+WHERE vpn_keys.plan = 'Premium'
 ORDER BY vpn_keys.featured DESC, vpn_keys.id DESC
 ");
 ?>
@@ -228,7 +228,7 @@ filter:drop-shadow(0 0 12px rgba(255,0,0,.45));
     </h1>
 
     <p style="color:#94a3b8;margin-top:10px;">
-        Free VPN Configurations
+        Premium  VPN Configurations
     </p>
 
     <div style="margin-top:18px;">

@@ -1,3 +1,16 @@
+<?php
+if (!isset($logo) && isset($db)) {
+    $stmt = $db->prepare("
+        SELECT setting_value
+        FROM settings
+        WHERE setting_key='logo'
+        LIMIT 1
+    ");
+    $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+    $logo = $result['setting_value'] ?? 'default-logo.png';
+}
+?>
+
 <nav class="navbar">
 
 <div class="container nav-wrap">
@@ -17,13 +30,13 @@
 
     <li><a href="/free.php">🔓 Free VPN</a></li>
 
-    <li><a href="/vip.php">💎 VIP Plans</a></li>
+    <li><a href="/premium.php">💎 Premium VPN</a></li>
 
     <li><a href="/downloads.php">⬇️ Downloads</a></li>
 
-    <li><a href="/tutorials.php">📚 Tutorials</a></li>
+    <li><a href="/status.php">📊 Status</a></li>
 
-    <li><a href="/contact.php">📞 Contact</a></li>
+<li><a href="/support.php">💬 Support</a></li>
 
     <li>
         <button id="themeToggle" class="theme-btn">

@@ -8,152 +8,180 @@ if (!isset($_SESSION['admin'])) {
 
 $db = new SQLite3(__DIR__ . '/../database/panel.db');
 
-$total = 0;
-if ($db) {
-    $result = $db->query("SELECT COUNT(*) AS total FROM vpn_keys");
-    if ($result) {
-        $row = $result->fetchArray(SQLITE3_ASSOC);
-        $total = $row['total'];
-    }
-}
+$totalKeys = (int)$db->querySingle("SELECT COUNT(*) FROM vpn_keys");
+$totalServers = (int)$db->querySingle("SELECT COUNT(*) FROM servers");
+$onlineServers = (int)$db->querySingle("SELECT COUNT(*) FROM servers WHERE status=1");
+$premiumKeys = (int)$db->querySingle("SELECT COUNT(*) FROM vpn_keys WHERE plan='Premium'");
+
+$recentKeys = $db->query("
+SELECT id,name,type,plan,created_at
+FROM vpn_keys
+ORDER BY id DESC
+LIMIT 5
+");
+
+include 'includes/header.php';
+include 'includes/sidebar.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+<div class="main-content">
 
-body{
-background:#0f172a;
-font-family:Arial,sans-serif;
-color:#fff;
-}
+<div class="card">
 
-.container{
-width:95%;
-max-width:1000px;
-margin:30px auto;
-}
+<h1 style="margin-bottom:10px;">📊 Dashboard</h1>
 
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:25px;
-}
+<p style="color:#94a3b8;">
+Welcome to TRENZYCH VPN Admin Panel
+</p>
 
-.logo{
-font-size:32px;
-color:#00e676;
-font-weight:bold;
-}
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:18px;
+margin-top:25px;
+">
 
-.logout{
-background:#ff5252;
-color:#fff;
-padding:10px 18px;
+<div class="card" style="text-align:center;">
+<div style="font-size:42px;">🔑</div>
+<h2 style="color:#00e676;"><?php echo $totalKeys; ?></h2>
+<p>Total VPN Keys</p>
+</div>
+
+<div class="card" style="text-align:center;">
+<div style="font-size:42px;">💎</div>
+<h2 style="color:#00e676;"><?php echo $premiumKeys; ?></h2>
+<p>Premium Keys</p>
+</div>
+
+<div class="card" style="text-align:center;">
+<div style="font-size:42px;">🖥️</div>
+<h2 style="color:#00e676;"><?php echo $totalServers; ?></h2>
+<p>Servers</p>
+</div>
+
+<div class="card" style="text-align:center;">
+<div style="font-size:42px;">🟢</div>
+<h2 style="color:#00e676;"><?php echo $onlineServers; ?></h2>
+<p>Online Servers</p>
+</div>
+
+</div>
+
+</div><div class="card">
+
+<h2 style="margin-bottom:20px;">⚡ Quick Actions</h2>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:18px;
+">
+
+<a href="servers.php" class="card" style="
 text-decoration:none;
-border-radius:8px;
-}
+color:#fff;
+text-align:center;
+">
+<div style="font-size:40px;">🖥️</div>
+<h3>Servers</h3>
+<p style="color:#94a3b8;">Manage VPS Servers</p>
+</a>
 
-.card{
-background:#1e293b;
-padding:20px;
-border-radius:12px;
-margin-bottom:20px;
-box-shadow:0 10px 25px rgba(0,0,0,.35);
-}
+<a href="keys.php" class="card" style="
+text-decoration:none;
+color:#fff;
+text-align:center;
+">
+<div style="font-size:40px;">🔑</div>
+<h3>VPN Keys</h3>
+<p style="color:#94a3b8;">Manage VPN Configs</p>
+</a>
 
-.stat{
-font-size:24px;
-color:#00e676;
-font-weight:bold;
-margin-top:10px;
-}</style>
+<a href="vip-plans.php" class="card" style="
+text-decoration:none;
+color:#fff;
+text-align:center;
+">
+<div style="font-size:40px;">💎</div>
+<h3>VIP Plans</h3>
+<p style="color:#94a3b8;">Premium Plans</p>
+</a>
 
-</head>
-<body>
+<a href="settings.php" class="card" style="
+text-decoration:none;
+color:#fff;
+text-align:center;
+">
+<div style="font-size:40px;">⚙️</div>
+<h3>Settings</h3>
+<p style="color:#94a3b8;">Website Settings</p>
+</a>
 
-<div class="container">
+</div>
 
-<div class="header">
-<div class="logo">🚀 TRENZYCH VPN</div>
-<a class="logout" href="logout.php">Logout</a>
 </div>
 
 <div class="card">
-<h2>Dashboard</h2>
-<div class="stat">
-Total VPN Keys : <?php echo $total; ?>
-</div>
-</div>
 
-<div class="card">
+<h2 style="margin-bottom:20px;">🕒 Recent VPN Keys</h2>
 
-<h2>VPN Keys</h2>
+<table width="100%" cellpadding="12" style="border-collapse:collapse;">
 
-<table width="100%" cellpadding="10">
+<tr style="background:#111827;">
+<th align="left">ID</th>
+<th align="left">Name</th>
+<th align="left">Type</th>
+<th align="left">Plan</th>
+<th align="left">Created</th>
+</tr><?php
+while($row = $recentKeys->fetchArray(SQLITE3_ASSOC)){
+?>
 
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Type</th>
-<th>Created</th>
+<tr style="border-bottom:1px solid #334155;">
+
+<td><?php echo $row['id']; ?></td>
+
+<td><?php echo htmlspecialchars($row['name']); ?></td>
+
+<td><?php echo htmlspecialchars($row['type']); ?></td>
+
+<td>
+
+<?php if($row['plan']=="Premium"){ ?>
+
+<span style="
+background:#9C27B0;
+padding:4px 10px;
+border-radius:999px;
+font-size:12px;
+">
+💎 Premium
+</span>
+
+<?php } else { ?>
+
+<span style="
+background:#00c853;
+padding:4px 10px;
+border-radius:999px;
+font-size:12px;
+color:#fff;
+">
+FREE
+</span>
+
+<?php } ?>
+
+</td>
+
+<td><?php echo htmlspecialchars($row['created_at']); ?></td>
+
 </tr>
 
 <?php
-
-$result = $db->query("SELECT * FROM vpn_keys ORDER BY id DESC");
-
-while($row = $result->fetchArray(SQLITE3_ASSOC)){
-
-echo "<tr>";
-
-echo "<td>".$row['id']."</td>";
-
-echo "<td>".$row['name']."</td>";
-
-echo "<td>".$row['type']."</td>";
-
-echo "<td>".$row['created_at']."</td>";
-
-echo "</tr>";
-
 }
-
 ?>
 
 </table>
 
-</div><div class="card">
-
-<a href="servers.php" style="display:inline-block;padding:12px 18px;background:#00e676;color:#000;text-decoration:none;border-radius:8px;margin-right:10px;">
-🖥 Servers
-</a>
-
-<a href="keys.php" style="display:inline-block;padding:12px 18px;background:#2196f3;color:#fff;text-decoration:none;border-radius:8px;">
-🔑 VPN Keys
-</a>
-
-<a href="settings.php" style="display:inline-block;padding:12px 18px;background:#ff9800;color:#fff;text-decoration:none;border-radius:8px;margin-left:10px;">
-⚙️ Settings
-</a>
-
-<a href="vip-plans.php" style="display:inline-block;padding:12px 18px;background:#ff9800;color:#fff;text-decoration:none;border-radius:8px;margin-left:10px;">
-💎 VIP Plans
-</a>
-
-</div>
-
-</div>
-
-</body>
-</html>
+</div><?php include 'includes/footer.php'; ?>
