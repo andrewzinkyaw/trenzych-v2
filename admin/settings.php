@@ -27,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     foreach ($settings as $key) {
 
+
         $value = trim($_POST[$key] ?? '');
 
         $stmt = $db->prepare("
@@ -40,6 +41,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(':key', $key, SQLITE3_TEXT);
         $stmt->execute();
     }
+
+if (!empty($_FILES['logo']['name'])) {
+    $logo = "logo_" . time() . "_" . basename($_FILES['logo']['name']);
+move_uploaded_file(
+    $_FILES['logo']['tmp_name'],
+    __DIR__ . "/../assets/images/" . $logo
+);    
+
+    $stmt = $db->prepare("
+        UPDATE settings
+        SET setting_value = :value,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE setting_key = 'logo'
+    ");
+    $stmt->bindValue(':value', $logo, SQLITE3_TEXT);
+
+$result = $stmt->execute();
+
+if (!$result) {
+    die($db->lastErrorMsg());
+}
+}
+if (!empty($_FILES['favicon']['name'])) {
+    $favicon = "favicon_" . time() . "_" . basename($_FILES['favicon']['name']);
+    move_uploaded_file(
+        $_FILES['favicon']['tmp_name'],
+        __DIR__ . "/../assets/images/" . $favicon
+    );
+
+    $stmt = $db->prepare("
+        UPDATE settings
+        SET setting_value = :value,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE setting_key = 'favicon'
+    ");
+    $stmt->bindValue(':value', $favicon, SQLITE3_TEXT);
+    $stmt->execute();
+}
 
     $success = "Settings saved successfully.";
 }
@@ -137,7 +176,7 @@ button:hover{
 </div>
 <?php } ?>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
 
 <label>Website Name</label>
 <input
@@ -159,6 +198,12 @@ type="text"
 name="footer_text"
 value="<?php echo htmlspecialchars(getSetting($db,'footer_text')); ?>"
 >
+
+<label>Logo</label>
+<input type="file" name="logo" accept=".png,.jpg,.jpeg,.svg">
+
+<label>Favicon</label>
+<input type="file" name="favicon" accept=".ico,.png">
 
 <label>Theme Color</label>
 <input

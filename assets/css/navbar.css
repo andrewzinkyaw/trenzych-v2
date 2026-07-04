@@ -1,0 +1,235 @@
+/* ===========================
+   TRENZYCH VPN - Navbar
+=========================== */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    background:rgba(2,6,23,.82);
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid var(--border);
+}
+
+[data-theme="light"] .navbar{
+    background:rgba(255,255,255,.85);
+}
+
+.nav-wrap{
+
+    height:72px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+}
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:20px;
+
+    font-weight:800;
+
+}
+
+.logo img{
+
+    width:42px;
+    height:42px;
+
+    object-fit:contain;
+
+}
+
+.logo span{
+
+    color:var(--text);
+
+}/* ===========================
+   Navigation Menu
+=========================== */
+
+.nav-menu{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    list-style:none;
+}
+
+.nav-menu li{
+    list-style:none;
+}
+
+.nav-menu a{
+    position:relative;
+    color:var(--text);
+    font-size:15px;
+    font-weight:600;
+    transition:all var(--transition);
+}
+
+.nav-menu a:hover{
+    color:var(--primary);
+}
+
+.nav-menu a::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-6px;
+    width:0;
+    height:2px;
+    background:var(--primary);
+    transition:width var(--transition);
+}
+
+.nav-menu a:hover::after{
+    width:100%;
+}
+
+/* ===========================
+   Theme Button
+=========================== */
+
+.theme-btn{
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:none;
+    border-radius:50%;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    transition:all var(--transition);
+}
+
+.theme-btn:hover{
+    background:var(--primary);
+    color:#fff;
+    transform:rotate(20deg);
+}
+
+/* ===========================
+   Menu Toggle
+=========================== */
+
+.menu-toggle{
+    display:none;
+
+    border:none;
+    background:none;
+
+    color:var(--text);
+
+    font-size:28px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.menu-toggle:hover{
+    color:var(--primary);
+}/* ===========================
+   Mobile Navigation
+=========================== */
+
+@media (max-width:900px){
+
+    .menu-toggle{
+        display:block;
+    }
+
+    .nav-menu{
+
+        position:absolute;
+
+        top:72px;
+        left:0;
+
+        width:100%;
+
+        display:none;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:18px;
+
+        padding:24px;
+
+        background:var(--surface);
+
+        border-bottom:1px solid var(--border);
+
+        box-shadow:var(--shadow);
+
+        animation:menuFade .25s ease;
+    }
+
+    .nav-menu.active{
+        display:flex;
+    }
+
+    .nav-menu li{
+        width:100%;
+    }
+
+    .nav-menu a{
+
+        display:block;
+
+        width:100%;
+
+        padding:10px 0;
+
+        font-size:16px;
+
+    }
+
+    .theme-btn{
+
+        width:48px;
+        height:48px;
+
+    }
+
+}
+
+/* ===========================
+   Animation
+=========================== */
+
+@keyframes menuFade{
+
+    from{
+        opacity:0;
+        transform:translateY(-10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
