@@ -150,20 +150,30 @@ margin-bottom:10px;
     border:none;
     border-radius:16px;
     cursor:pointer;
-    background:linear-gradient(135deg,#00e676,#00c853);
+    background:linear-gradient(135deg,#5f9f68,#4f8b58);
     color:#fff;
     font-size:16px;
     font-weight:700;
     letter-spacing:.4px;
-    box-shadow:0 8px 24px rgba(0,230,118,.30);
+    box-shadow:0 8px 24px rgba(95,159,104,.30);
     transition:.25s ease;
 }
 
 .copy-btn:hover{
+    background:linear-gradient(135deg,#6eae77,#5f9f68);
     transform:translateY(-2px);
-    box-shadow:0 12px 28px rgba(0,230,118,.45);
-    filter:brightness(1.05);
+    box-shadow:0 10px 25px rgba(95,159,104,.35);
+    filter:brightness(1.03);
 }
+
+.copy-btn.copied{
+    background:#2196f3 !important;
+    color:#fff;
+    transform:scale(.95);
+    box-shadow:0 0 22px rgba(33,150,243,.55);
+    transition:all .25s ease;
+}
+
 .telegram-btn{
     display:inline-block;
     background:#229ED9;
@@ -331,21 +341,23 @@ if ($ping <= 50) {
 </div>
 <div style="
 background:#111827;
-color:#00ff99;
+color:#7FB77E;
 padding:12px;
 margin:10px 0;
 border-radius:8px;
 font-family:monospace;
 font-size:13px;
 word-break:break-all;
-border:1px solid #334155;
+border:1px solid rgba(127,183,126,.35);
+box-shadow:0 0 15px rgba(127,183,126,.12);
 ">
 <?php echo htmlspecialchars($row['config']); ?>
 
 </div>
 <button
 class="copy-btn"
-onclick='navigator.clipboard.writeText(<?php echo json_encode($row["config"]); ?>);alert("VPN Config Copied!");'>
+onclick='navigator.clipboard.writeText(<?php echo json_encode($row["config"]); ?>);'
+>
 <span style="display:flex;align-items:center;justify-content:center;gap:10px;">
 <span style="font-size:20px;">📋</span>
 <span style="font-weight:700;letter-spacing:.3px;">COPY CONFIG</span>
@@ -393,17 +405,23 @@ filter.addEventListener("change", updateKeys);
 
 <script>
 document.querySelectorAll(".copy-btn").forEach(btn=>{
+
     btn.addEventListener("click",function(){
+
         const old=this.innerHTML;
 
+        this.classList.add("copied");
         this.innerHTML="✅ Copied!";
-        this.style.background="#00c853";
 
         setTimeout(()=>{
+
+            this.classList.remove("copied");
             this.innerHTML=old;
-            this.style.background="";
+
         },1500);
+
     });
+
 });
 </script>
 

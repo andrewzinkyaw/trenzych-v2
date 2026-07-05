@@ -1,0 +1,174 @@
+/* ========================================
+   TRENZYCH VPN - HOME PAGE
+======================================== */
+
+/* ---------- HERO ---------- */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    padding:90px 20px 80px;
+    text-align:center;
+    background:
+        radial-gradient(circle at top center, rgba(0,230,118,.18), transparent 45%),
+        linear-gradient(180deg,#020617 0%,#08101f 100%);
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at center, rgba(0,230,118,.08), transparent 60%);
+    pointer-events:none;
+}
+
+.hero .container{
+    position:relative;
+    z-index:2;
+    max-width:900px;
+    margin:auto;
+}
+
+.hero-badge{
+    display:inline-block;
+    padding:12px 28px;
+    border-radius:999px;
+    border:1px solid rgba(0,230,118,.25);
+    background:rgba(0,230,118,.08);
+    color:#00e676;
+    font-weight:700;
+    font-size:18px;
+    margin-bottom:28px;
+}
+
+.hero h1{
+    font-size:72px;
+    line-height:1.05;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:25px;
+}
+
+.hero-subtitle{
+    max-width:760px;
+    margin:0 auto 45px;
+    color:#94a3b8;
+    font-size:22px;
+    line-height:1.8;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.hero-buttons .btn{
+    min-width:260px;
+    padding:18px 28px;
+    border-radius:18px;
+    font-size:20px;
+    font-weight:700;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media(max-width:768px){
+
+.hero{
+    padding:70px 20px;
+}
+
+.hero h1{
+    font-size:56px;
+}
+
+.hero-subtitle{
+    font-size:18px;
+}
+
+.hero-buttons{
+    flex-direction:column;
+    align-items:center;
+}
+
+.hero-buttons .btn{
+    width:100%;
+    max-width:320px;
+}
+
+}
+/* ===== Stats ===== */
+
+.stats{
+    padding:70px 20px;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.stat-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:220px;
+    text-align:center;
+    text-decoration:none;
+    color:#fff;
+
+    background:rgba(15,23,42,.75);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;
+    backdrop-filter:blur(16px);
+
+    transition:.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-6px);
+    border-color:#00e676;
+    box-shadow:0 0 30px rgba(0,230,118,.25);
+}
+
+.stat-icon{
+    font-size:48px;
+    margin-bottom:20px;
+}
+
+.stat-number{
+    font-size:42px;
+    font-weight:800;
+    color:#00e676;
+    margin-bottom:10px;
+}
+
+.stat-label{
+    font-size:20px;
+    color:#cbd5e1;
+}
+
+@media(max-width:768px){
+
+.stats-grid{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.stat-card{
+    min-height:180px;
+}
+
+.stat-number{
+    font-size:34px;
+}
+
+.stat-label{
+    font-size:16px;
+}
+
+}
