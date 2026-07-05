@@ -47,6 +47,38 @@ gaming and streaming.
 </div>
 
 </section>
+<section class="stats">
+<div class="container">
+
+<div class="stats-grid">
+
+<a href="free.php" class="stat-card">
+<div class="stat-icon">🔑</div>
+<div class="stat-number"><?php echo $totalKeys; ?></div>
+<div class="stat-label">VPN Keys</div>
+</a>
+
+<a href="status.php" class="stat-card">
+<div class="stat-icon">🖥️</div>
+<div class="stat-number"><?php echo $totalServers; ?></div>
+<div class="stat-label">Servers</div>
+</a>
+
+<a href="status.php" class="stat-card">
+<div class="stat-icon">🟢</div>
+<div class="stat-number"><?php echo $onlineServers; ?></div>
+<div class="stat-label">Online</div>
+</a>
+
+<a href="support.php" class="stat-card">
+<div class="stat-icon">⚡</div>
+<div class="stat-number">24/7</div>
+<div class="stat-label">Support</div>
+</a>
+</div>
+
+</div>
+</section>
 <section class="why">
 
 <div class="container">
